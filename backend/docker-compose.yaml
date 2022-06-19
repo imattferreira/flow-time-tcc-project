@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  database:
+    image: postgres
+    container_name: flow-db
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=primary
+    volumes:
+      - pgdata:/data/postgres
+
+  app:
+    build: .
+    container_name: flow-api
+    restart: always
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/usr/app
+    links:
+      - database
+    depends_on:
+      - database
+
+# mapping volumes
+volumes:
+  pgdata:
+    driver: local
